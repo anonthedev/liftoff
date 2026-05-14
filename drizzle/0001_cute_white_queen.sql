@@ -1,0 +1,1 @@
+ALTER TABLE `athlete_profiles` ADD `exercise_order` text DEFAULT 'Squat,Bench,Deadlift' NOT NULL;
