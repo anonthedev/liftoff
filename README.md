@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fellowship AI Demo
+
+A powerlifting-focused workout logger that helps lifters track training, estimate strength progress, compare lifts against benchmarks, and generate AI-powered coaching advice.
+
+## Overview
+
+This app lets users create an athlete profile, log squat/bench/deadlift sets, calculate estimated 1RMs, and view training stats. Workouts can be entered manually or logged from voice using OpenAI transcription. The app also supports OpenPowerlifting benchmark imports, allowing lifters to compare their numbers against real competitive percentile data by sex, age, and bodyweight.
+
+## Features
+
+- Google sign-in with NextAuth
+- Athlete profile with age, gender, bodyweight, goals, and 1RM values
+- Manual workout logging for squat, bench, and deadlift
+- Voice-based workout logging using OpenAI Whisper
+- Estimated 1RM calculation
+- Session stats and recent workout history
+- AI-generated coaching advice
+- OpenPowerlifting percentile benchmark import
+- Local SQLite database using Drizzle ORM
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- NextAuth
+- Drizzle ORM
+- SQLite / better-sqlite3
+- OpenAI API
+- OpenPowerlifting data
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a local environment file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Add the required environment variables:
 
-## Learn More
+```bash
+OPENAI_API_KEY=your-openai-api-key
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
 
-To learn more about Next.js, take a look at the following resources:
+Run the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open `http://localhost:3000` in your browser.
 
-## Deploy on Vercel
+## OpenPowerlifting Data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To import OpenPowerlifting benchmark data:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm import:opl
+```
+
+This downloads the OpenPowerlifting CSV, processes squat/bench/deadlift results, and stores percentile benchmarks in the local SQLite database.
+
+## Deployment
+
+The project is deployed on DigitalOcean as a Node.js Next.js application. The production environment stores the required secrets in DigitalOcean environment variables, including the OpenAI key, NextAuth settings, and Google OAuth credentials.
+
+The deployment flow is:
+
+```bash
+pnpm install
+pnpm build
+pnpm start
+```
+
+Because the app currently uses SQLite through `better-sqlite3`, the deployed instance needs persistent storage for the `data/lifting.db` file. For a larger production version, the database would likely move to a hosted SQL provider such as PostgreSQL or Turso.
+
+## Scripts
+
+```bash
+pnpm dev
+pnpm build
+pnpm start
+pnpm lint
+pnpm import:opl
+```
